@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Factory;
 use Illuminate\Support\Facades\Validator;
@@ -31,11 +30,10 @@ class UserController extends Controller
             'email'=>$request->email,
             'password'=>Hash::make($request->password)
         ]);
-        
 
         return response()->json([
             'msg'=>'User Inserted Successfully',
-            'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
+            'user'=>$user
         ]);
     }
 
