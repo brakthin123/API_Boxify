@@ -31,14 +31,11 @@ class UserController extends Controller
             'email'=>$request->email,
             'password'=>Hash::make($request->password)
         ]);
-        $token = $user->createToken('MyAppToken')->accessToken;
-
-        DB::commit();
+        
 
         return response()->json([
             'msg'=>'User Inserted Successfully',
-            'user'=>$user,
-            'access_token' => $token,
+            'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
         ]);
     }
 
