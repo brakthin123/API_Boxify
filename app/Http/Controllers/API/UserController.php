@@ -32,9 +32,10 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'msg'=>'User Inserted Successfully',
-            'user'=>$user
-        ]);
+            'status' => true,
+            'message' => 'User Created Successfully',
+            'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
+        ], 200);
     }
 
     public function login(Request $request)
