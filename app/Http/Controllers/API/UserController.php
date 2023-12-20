@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Factory;
 use Illuminate\Support\Facades\Validator;
@@ -30,10 +31,14 @@ class UserController extends Controller
             'email'=>$request->email,
             'password'=>Hash::make($request->password)
         ]);
+        $token = $user->createToken('MyAppToken')->accessToken;
+
+        DB::commit();
 
         return response()->json([
             'msg'=>'User Inserted Successfully',
-            'user'=>$user
+            'user'=>$user,
+            'access_token' => $token,
         ]);
     }
 
