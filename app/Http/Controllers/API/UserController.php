@@ -7,76 +7,139 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Factory;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
     public function register(Request $request)
     {
-        $Validator = Validator::make($request->all(),[
-            'name' => 'required|string|min:2|max:100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6'
-        ]);
+        try {
+            //Validated
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required|string|min:2|max:100',
+                    'email' => 'required|string|email|max:100|unique:users',
+                    'password' => 'required|string|min:6'
+                ]
+            );
 
-        if($Validator->fails())
-        {
-            return response()->json($Validator->errors());
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+
+            return response()->json([
+
+                'status' => true,
+                'message' => 'User Created Successfully',
+                'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
+
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
-
-       $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password)
-        ]);
-
-        return response()->json([
-            'msg'=>'User Inserted Successfully',
-            'user'=>$user
-        ]);
     }
+
+
+    /**
+     * Login The User
+     * @param Request $request
+     * @return User
+     */
+
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'email' => 'required|string|email',
-            'password' => 'required|string|min:6'
+
+        // data validation
+        $request->validate([
+            "email" => "required|email",
+            "password" => "required"
         ]);
 
-        if($validator->fails())
-        {
-            return response()->json($validator->errors());
-        }
-        if(!$token = Auth()->attempt($validator->validated()))
-        {
-            return response()->json(['success'=>false,'msg'=>'Username & Password is incorrect']);
-        }
-
-        return $this->respondWithToken($token);
-    }
-
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' =>Auth::factory()->getTTL()*60
+        // JWTAuth
+        $token = JWTAuth::attempt([
+            "email" => $request->email,
+            "password" => $request->password
         ]);
+
+        if (!empty($token)) {
+            $user = Auth::user();
+            return response()->json([
+
+                "status" => true,
+                "message" => "User logged in succcessfully",
+                'data' => ["token" => $token, "user" => $user],
+
+
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "Invalid details"
+            ]);
+        }
     }
 
+
+    // User Profile
     public function profile()
     {
-        return response()->json(auth()->user());
+        try {
+            // Attempt to authenticate the user using the provided JWT token
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Exception $e) {
+            // If authentication fails, return an 'Unauthorized' response with a 401 status code
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // If authentication is successful, return the user data in a JSON response
+        return response()->json($user);
     }
 
-    public function refresh()
+
+    // To generate refresh token value
+    public function refreshToken()
     {
-        return $this->respondWithToken(auth::refresh());
+
+        $newToken = Auth::refresh();
+
+        return response()->json([
+            "status" => true,
+            "message" => "New access token",
+            "token" => $newToken
+        ]);
     }
-    public function logout()
+
+    public function logout(Request $request)
     {
-        auth()->logout();
-        return response()->json(['message'=>'User Successfully logged out']);
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            // Invalidate the JWT token
+            $token = JWTAuth::getToken();
+
+            if ($token) {
+                try {
+                    JWTAuth::invalidate($token);
+                } catch (TokenInvalidException $e) {
+                    // Handle token invalidation exception if needed
+                    return response()->json(['error' => 'Failed to invalidate token'], 500);
+                }
+            }
+
+            // Logout the user
+            Auth::logout();
+
+            return response()->json(['message' => 'Successfully logged out']);
+        } else {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
     }
 }
