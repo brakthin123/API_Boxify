@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -30,22 +31,27 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            // Assuming you have a Product model
-            $product = new Product();
-            $product->name        = $request->input('name');
-            $product->image_path  = $request->file('image')->store('image', 'public');
-            $product->quantity    = $request->input('quantity');
-            $product->price       = $request->input('price');
-            $product->category    = $request->input('category');
-            $product->description = $request->input('description');
-            $product->save();
+            $imagePath = $request->file('image')->store('image', 'public/upload/products/');
+
+
+            // Create a new Product instance and associate it with the authenticated user
+            $user = Auth::user()->products;
+            $product = new Product([
+                'name'        => $request->input('name'),
+                'image'       => $imagePath, // Assuming $imagePath is set earlier in your code
+                'quantity'    => $request->input('quantity'),
+                'price'       => $request->input('price'),
+                'category'    => $request->input('category'),
+                'description' => $request->input('description'),
+            ]);
+
+            $user->save($product);
 
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Product created successfully',
                 'data'    => $product,
             ], 201);
-
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 500);
         }
