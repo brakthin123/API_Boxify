@@ -24,26 +24,28 @@ class UserController extends Controller
                 'email' => 'required|string|email|max:100|unique:users',
                 'password' => 'required|string|min:6',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Validation error',
                     'errors' => $validator->errors(),
-                ], 422);
+                ], 400);
             }
-    
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-    
-            return response()->json([
 
+            // Generate JWT token
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
+                'data' => ['token' => $token, 'user' => $user],
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,7 +54,7 @@ class UserController extends Controller
             ], 500);
         }
     }
-    
+
 
     /**
      * Login The User

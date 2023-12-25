@@ -21,13 +21,15 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::group(['middleware'=>'api'],function($routes){
+Route::group(['middleware'=>'auth:api'],function($routes){
     Route::post('/register',[UserController::class,'register']);
     Route::post('/login',[UserController::class,'login']);
     Route::post('/profile',[UserController::class,'profile']);
     Route::post('/refresh',[UserController::class,'refresh']);
     Route::post('/logout',[UserController::class,'logout']);
 
-    Route::post('/storeProduct',[ProductController::class,'storeProduct']);
+    
 
 });
+Route::post('/store-product', [ProductController::class, 'storeProduct'])->name('store.product');
+Route::get('/images/{filename}',[ProductController::class, 'show'])->name('show.product');

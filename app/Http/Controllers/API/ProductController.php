@@ -7,7 +7,9 @@ use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProductController extends Controller
 {
@@ -31,21 +33,17 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $imagePath = $request->file('image')->store('image', 'public/upload/products/');
+            $imagePath = $request->file('image')->store('image', 'public/upload/products');
 
 
-            // Create a new Product instance and associate it with the authenticated user
-            $user = Auth::user()->products;
-            $product = new Product([
+            $product = Product::create([
                 'name'        => $request->input('name'),
-                'image'       => $imagePath, // Assuming $imagePath is set earlier in your code
+                'image'       => $imagePath,
                 'quantity'    => $request->input('quantity'),
                 'price'       => $request->input('price'),
                 'category'    => $request->input('category'),
                 'description' => $request->input('description'),
             ]);
-
-            $user->save($product);
 
             return response()->json([
                 'status'  => 'success',
@@ -53,7 +51,20 @@ class ProductController extends Controller
                 'data'    => $product,
             ], 201);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            // Log the exception for debugging
+            Log::error('Error storing product: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+
+            return response()->json(['errors' => 'Internal Server Error'], 500);
         }
+    }
+    public function show($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        return response()->json(['data' => $product->toArray()]);
     }
 }
