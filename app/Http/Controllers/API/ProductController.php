@@ -33,7 +33,7 @@ class ProductController extends Controller
                 ], 422);
             }
 
-            $imagePath = $request->file('image')->store('image', 'public/upload/products');
+            $imagePath = $request->file('image')->store('image', 'public/upload/products/');
 
 
             $product = Product::create([
