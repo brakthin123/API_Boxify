@@ -13,40 +13,48 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
+
+    // function register user
+
     public function register(Request $request)
     {
         try {
-            //Validated
-            $validateUser = Validator::make(
-                $request->all(),
-                [
-                    'name' => 'required|string|min:2|max:100',
-                    'email' => 'required|string|email|max:100|unique:users',
-                    'password' => 'required|string|min:6'
-                ]
-            );
-
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|min:2|max:100',
+                'email' => 'required|string|email|max:100|unique:users',
+                'password' => 'required|string|min:6',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+    
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
-
+    
             return response()->json([
-
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'data' => ['token' => $user->createToken("API TOKEN")->accessToken, "user" => $user],
-
+                'data' => [
+                    'token' => $user->createToken("API TOKEN")->accessToken,
+                    'user' => $user,
+                ],
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
             ], 500);
         }
     }
-
+    
 
     /**
      * Login The User
