@@ -52,8 +52,8 @@ return [
     
         'public/upload/products' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/upload/products/'),
-            'url' => env('APP_URL').'/storage/upload/products/',
+            'root' => storage_path('app/public/upload/products'),
+            'url' => env('APP_URL').'/storage/upload/products',
             'visibility' => 'public',
         ],
 
