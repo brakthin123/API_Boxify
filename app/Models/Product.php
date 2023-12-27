@@ -7,17 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $appends = ['image_url'];
-    protected $fillable = [
-        'name', 'image', 'quantity', 'price', 'category', 'description',
-    ];
-    public function getImageUrlAttribute()
-    {
-        return asset('storage/' . $this->attributes['image']);
-    }
+    use HasFactory;
 
-    public function user()
+    protected $fillable = [
+        'name',
+        'image',
+        'quantity',
+        'unit_price',
+        'description',
+        'items',
+        'folder_id',
+    ];
+
+    public function folder()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Folder::class);
     }
 }

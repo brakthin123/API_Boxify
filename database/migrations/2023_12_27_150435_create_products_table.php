@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->string('image')->nullable();
-            $table->string('quantity')->nullable();
-            $table->string('price')->nullable();
-            $table->string('category')->nullable();
-            $table->string('description')->nullable();
+            $table->integer('quantity');
+            $table->decimal('unit_price', 10, 2);
+            $table->text('description')->nullable();
+            $table->json('items')->nullable();
+            $table->unsignedBigInteger('folder_id')->nullable(); // Foreign key
             $table->timestamps();
+    
+            $table->foreign('folder_id')->references('id')->on('folders')->onDelete('set null');
         });
     }
 

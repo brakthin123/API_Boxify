@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\FolderController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -21,14 +22,14 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::group(['middleware'=>'api'],function($routes){
-    Route::post('/register',[UserController::class,'register']);
-    Route::post('/login',[UserController::class,'login']);
-    Route::post('/profile',[UserController::class,'profile']);
-    Route::post('/refresh',[UserController::class,'refresh']);
-    Route::post('/logout',[UserController::class,'logout']);
-    Route::post('/store-product', [ProductController::class, 'storeProduct'])->name('store.product');
-    Route::get('/showProduct',[ProductController::class, 'show'])->name('show.product');
-    
+Route::group(['middleware' => 'api'], function ($routes) {
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+    Route::post('/profile', [UserController::class, 'profile']);
+    Route::post('/refresh', [UserController::class, 'refresh']);
+    Route::post('/logout', [UserController::class, 'logout']);
+    // Use a more RESTful endpoint for storing products
+    Route::post('/folders/store', [FolderController::class, 'store'])->name('folders.store');
 
+    Route::get('/showProduct', [ProductController::class, 'show'])->name('show.product');
 });
