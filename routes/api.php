@@ -27,9 +27,8 @@ Route::group(['middleware'=>'api'],function($routes){
     Route::post('/profile',[UserController::class,'profile']);
     Route::post('/refresh',[UserController::class,'refresh']);
     Route::post('/logout',[UserController::class,'logout']);
-
+    Route::post('/store-product', [ProductController::class, 'storeProduct'])->name('store.product');
+    Route::get('/showProduct',[ProductController::class, 'show'])->name('show.product');
     
 
 });
-Route::post('/store-product', [ProductController::class, 'storeProduct'])->name('store.product');
-Route::get('/images/{filename}',[ProductController::class, 'show'])->name('show.product');

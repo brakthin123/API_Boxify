@@ -64,9 +64,9 @@ class ProductController extends Controller
     }
 }
 
-    public function show($id)
+    public function show()
     {
-        $product = Product::find($id);
+        $product = Product::all();
 
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
