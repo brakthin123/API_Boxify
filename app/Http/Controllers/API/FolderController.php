@@ -25,7 +25,7 @@ class FolderController extends Controller
         $folder = $user->folders()->create($data);
 
         return response()->json([
-            'status' => 'success',
+            'status' => 'true',
             'message' => 'Folder created successfully',
             'data' => $folder]);
     }
