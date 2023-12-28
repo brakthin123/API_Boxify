@@ -30,6 +30,5 @@ Route::group(['middleware' => 'api'], function ($routes) {
     Route::post('/logout', [UserController::class, 'logout']);
     // Use a more RESTful endpoint for storing products
     Route::post('/folders/store', [FolderController::class, 'store'])->name('folders.store');
-
-    Route::get('/showProduct', [ProductController::class, 'show'])->name('show.product');
+    Route::get('/folders/index', [FolderController::class, 'index'])->name('folders.index');
 });

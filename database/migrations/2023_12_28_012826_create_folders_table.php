@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained(); // This line adds the user_id column and foreign key constraint
             $table->string('name');
             $table->string('image');
-            $table->decimal('price', 8, 2);
+            $table->decimal('price');
             $table->string('unit');
-            $table->text('description');
-            $table->integer('quantity')->default(0); // Add a default value for quantity
+            $table->string('description');
             $table->timestamps();
         });
     }
