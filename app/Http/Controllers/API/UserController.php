@@ -98,11 +98,14 @@ class UserController extends Controller
 
 
     // User Profile
-    public function profile()
+    public function show()
     {
         try {
             // Attempt to authenticate the user using the token
             $user = JWTAuth::parseToken()->authenticate();
+
+            // Load the user's profile
+            $user->load('profile');
 
             // Return user profile data as JSON response
             return response()->json(['profile' => $user]);

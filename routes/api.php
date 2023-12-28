@@ -30,7 +30,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::middleware(['jwt.auth','auth:api'])->group(function () {
 
     /**Route for View Profile */
-    Route::post('/profile', [UserController::class, "profile"]);
+    Route::get('/profile', [UserController::class, "show"]);
     
     /**Route for refresh-token */
     Route::get('/refresh-token', [UserController::class, 'refreshToken']);
