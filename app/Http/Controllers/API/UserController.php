@@ -100,12 +100,15 @@ class UserController extends Controller
     // User Profile
     public function profile()
     {
-        $user = User::first();  // Replace with your actual logic
+        try {
+            // Attempt to authenticate the user using the token
+            $user = JWTAuth::parseToken()->authenticate();
 
-        if ($user) {
-            return response()->json(['message' => 'User profile retrieved successfully', 'user' => $user]);
-        } else {
-            return response()->json(['message' => 'User not found'], 404);
+            // Return user profile data as JSON response
+            return response()->json(['profile' => $user]);
+        } catch (\Exception $e) {
+            // Handle the case where the token is invalid or the user is not authenticated
+            return response()->json(['error' => 'User not authenticated'], 401);
         }
     }
 

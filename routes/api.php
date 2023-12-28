@@ -27,7 +27,7 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['jwt.auth','auth:api'])->group(function () {
 
     /**Route for View Profile */
     Route::post('/profile', [UserController::class, "profile"]);
