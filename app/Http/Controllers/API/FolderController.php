@@ -15,11 +15,11 @@ class FolderController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string',
-            'image' => 'required|string',
-            'price' => 'required|numeric',
-            'unit' => 'required|string',
-            'description' => 'required|string',
+            'name' => 'string',
+            'image' => 'string',
+            'price' => 'numeric',
+            'unit' => 'string',
+            'description' => 'string',
         ]);
     
         // Decode base64 image string

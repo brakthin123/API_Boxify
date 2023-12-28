@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('folder_id');
             $table->string('name');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->decimal('price');
-            $table->string('unit');
-            $table->string('description');
-            $table->integer('quantity');
+            $table->string('unit')->nullable();
+            $table->string('description')->nullable();
+            $table->integer('quantity')->nullable();
             $table->timestamps();
         });
     }

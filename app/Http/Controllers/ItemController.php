@@ -11,11 +11,11 @@ class ItemController extends Controller
 {
     $data = $request->validate([
         'name' => 'required|string',
-        'image' => 'required|string',
-        'price' => 'required|numeric',
-        'unit' => 'required|string',
-        'description' => 'required|string',
-        'quantity' => 'required|numeric',
+        'image' => 'string',
+        'price' => 'numeric',
+        'unit' => 'string',
+        'description' => 'string',
+        'quantity' => 'numeric',
         'folder_id' => 'required|exists:folders,id',
     ]);
 
