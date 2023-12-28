@@ -99,15 +99,15 @@ class UserController extends Controller
 
     // User Profile
     public function profile()
-{
-    $user = User::first();  // Replace with your actual logic
+    {
+        $user = User::first();  // Replace with your actual logic
 
-    if ($user) {
-        return response()->json(['message' => 'User profile retrieved successfully', 'user' => $user]);
-    } else {
-        return response()->json(['message' => 'User not found'], 404);
+        if ($user) {
+            return response()->json(['message' => 'User profile retrieved successfully', 'user' => $user]);
+        } else {
+            return response()->json(['message' => 'User not found'], 404);
+        }
     }
-}
 
 
     // To generate refresh token value
@@ -147,4 +147,5 @@ class UserController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
     }
+    
 }

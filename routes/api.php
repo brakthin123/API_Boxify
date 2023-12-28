@@ -21,14 +21,23 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+/**Route for login API */
+Route::post('/register', [UserController::class, 'register']);
+/**Route for register API */
+Route::post('/login', [UserController::class, 'login']);
 
-Route::group(['middleware' => 'api'], function ($routes) {
-    Route::post('/register', [UserController::class, 'register']);
-    Route::post('/login', [UserController::class, 'login']);
-    Route::post('/profile', [UserController::class, 'profile']);
-    Route::post('/refresh', [UserController::class, 'refresh']);
+
+Route::middleware(['auth:api'])->group(function () {
+
+    /**Route for View Profile */
+    Route::post('/profile', [UserController::class, "profile"]);
+    
+    /**Route for refresh-token */
+    Route::get('/refresh-token', [UserController::class, 'refreshToken']);
+    /**Route for logout API */
     Route::post('/logout', [UserController::class, 'logout']);
-    // Use a more RESTful endpoint for storing products
+    
     Route::post('/folders/store', [FolderController::class, 'store'])->name('folders.store');
     Route::get('/folders/index', [FolderController::class, 'index'])->name('folders.index');
 });
+
