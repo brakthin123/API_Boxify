@@ -51,6 +51,9 @@ class ItemController extends Controller
             return response()->json(['message' => 'No items found for the given folder_id', 'items' => []]);
         }
 
-        return response()->json(['message' => 'Items retrieved successfully', 'items' => $items]);
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Items retrieved successfully',
+            'data' => $items]);
     }
 }

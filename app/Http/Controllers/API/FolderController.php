@@ -68,9 +68,13 @@ class FolderController extends Controller
 
         // Check if folders exist
         if ($folders->isEmpty()) {
-            return response()->json(['message' => 'No matching folders found for the user'], 404);
+            return response()->json([
+                'message' => 'No matching folders found for the user'], 404);
         }
 
-        return response()->json(['message' => 'Folders retrieved successfully', 'folders' => $folders]);
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Folders retrieved successfully',
+            'data' => $folders]);
     }
 }
