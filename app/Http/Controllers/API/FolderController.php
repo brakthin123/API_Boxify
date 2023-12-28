@@ -21,14 +21,31 @@ class FolderController extends Controller
             'unit' => 'required|string',
             'description' => 'required|string',
         ]);
+    
+        // Decode base64 image string
+        $imageData = base64_decode($data['image']);
+    
+        // Generate a unique filename for the image
+        $filename = 'image_' . time() . '.png'; // You can adjust the filename and extension as needed
+    
+        // Save the image to the storage path
+        $path = storage_path('app/public/images/') . $filename;
+        file_put_contents($path, $imageData);
+    
+        // Add the image path to the data array
+        $data['image_path'] = 'images/' . $filename; // Adjust the path based on your storage configuration
+    
+        // Authenticate the user and create the folder with additional image information
         $user = JWTAuth::parseToken()->authenticate();
         $folder = $user->folders()->create($data);
-
+    
         return response()->json([
             'status' => 'true',
             'message' => 'Folder created successfully',
-            'data' => $folder]);
+            'data' => $folder
+        ]);
     }
+    
 
     public function index(Request $request)
     {
