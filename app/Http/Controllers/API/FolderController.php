@@ -24,7 +24,10 @@ class FolderController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $folder = $user->folders()->create($data);
 
-        return response()->json(['message' => 'Folder created successfully', 'folder' => $folder]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Folder created successfully',
+            'data' => $folder]);
     }
 
     public function index(Request $request)
