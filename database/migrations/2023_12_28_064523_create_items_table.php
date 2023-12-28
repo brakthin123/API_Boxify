@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('folder_id');
             $table->string('name');
-            $table->string('image')->nullable();
+            $table->string('image');
+            $table->decimal('price');
+            $table->string('unit');
+            $table->string('description');
             $table->integer('quantity');
-            $table->decimal('unit_price', 10, 2);
-            $table->text('description')->nullable();
-            $table->json('items')->nullable();
-            $table->unsignedBigInteger('folder_id')->nullable(); // Foreign key
             $table->timestamps();
-    
-            $table->foreign('folder_id')->references('id')->on('folders')->onDelete('set null');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('items');
     }
 };

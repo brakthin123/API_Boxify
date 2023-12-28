@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\FolderController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,5 +40,8 @@ Route::middleware(['jwt.auth','auth:api'])->group(function () {
     
     Route::post('/folders/store', [FolderController::class, 'store'])->name('folders.store');
     Route::get('/folders/index', [FolderController::class, 'index'])->name('folders.index');
+
+    Route::post('/item/store', [ItemController::class, 'store'])->name('folders.store');
+    Route::get('/item/index/{folder_id}', [ItemController::class, 'index'])->name('item.index');
 });
 
